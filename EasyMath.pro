@@ -11,10 +11,18 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = EasyMath
 TEMPLATE = app
 
+CONFIG += c++11
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    token.cpp \
+    tokenizer.cpp \
+    parser.cpp
 
-HEADERS  += mainwindow.hpp
+HEADERS  += mainwindow.hpp \
+    token.hpp \
+    tokenizer.hpp \
+    parser.hpp \
+    expressionnode.hpp
 
 FORMS    += mainwindow.ui
