@@ -7,9 +7,10 @@ Tokenizer::Tokenizer()
     add("[+-]", Token::PLUSMINUS);
     add("[*/]", Token::MULTDIV);
     add("\\^", Token::RAISED);
+    add(FunctionExpressionNode::getFunctionTokens(), Token::FUNCTION);
     add("\\(", Token::OPEN_BRACKET);
     add("\\)", Token::CLOSE_BRACKET);
-    add("[0-9]+", Token::NUMBER);
+    add("\\d+\\.?\\d*", Token::NUMBER);
     add("[a-zA-Z][a-zA-Z0-9_]*", Token::VARIABLE);
 }
 

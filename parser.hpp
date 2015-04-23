@@ -3,27 +3,33 @@
 
 #include <algorithm>
 #include "tokenizer.hpp"
+#include "constantexpressionnode.hpp"
+#include "variableexpressionnode.hpp"
+#include "functionexpressionnode.hpp"
+#include "exponentiationexpressionnode.hpp"
+#include "additionexpressionnode.hpp"
+#include "multiplicationexpressionnode.hpp"
 
 class Parser
 {
 private:
     QLinkedList<Token> m_tokens;
     Token m_lookAhead;
-    void expression();
-    void signedTerm();
-    void sumOp();
-    void term();
-    void factor();
-    void termOp();
-    void factorOp();
-    void signedFactor();
-    void argument();
-    void value();
+    ExpressionNode& expression();
+    ExpressionNode& signedTerm();
+    ExpressionNode& sumOp(ExpressionNode& p_expr);
+    ExpressionNode& term();
+    ExpressionNode& factor();
+    ExpressionNode& termOp(ExpressionNode& p_expr);
+    ExpressionNode& factorOp(ExpressionNode& p_expr);
+    ExpressionNode& signedFactor();
+    ExpressionNode& argument();
+    ExpressionNode& value();
     void nextToken();
 
 public:
     Parser();
-    void parse(QLinkedList<Token> p_tokens);
+    ExpressionNode& parse(QLinkedList<Token> p_tokens);
 };
 
 #endif // PARSER_HPP

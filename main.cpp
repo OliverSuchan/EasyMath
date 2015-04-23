@@ -9,9 +9,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+    FunctionExpressionNode::initMainFuncs();
     Parser p = Parser();
     Tokenizer t = Tokenizer();
-    t.tokenize("-5+(7*x-3)");
-    p.parse(t.getTokens());
+    t.tokenize("cos(2)");
+    std::cout << p.parse(t.getTokens()).getValue() << std::endl;
     return a.exec();
 }

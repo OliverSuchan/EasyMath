@@ -5,6 +5,7 @@
 #include <QLinkedList>
 #include <QRegularExpression>
 #include "token.hpp"
+#include "functionexpressionnode.hpp"
 
 class Tokenizer
 {

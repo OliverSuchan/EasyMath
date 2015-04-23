@@ -1,90 +1,149 @@
 #include "parser.hpp"
 
-void Parser::expression()
+ExpressionNode &Parser::expression()
 {
-    signedTerm();
-    sumOp();
+   ExpressionNode& expr = signedTerm();
+   return sumOp(expr);
 }
 
-void Parser::signedTerm()
-{
-    if(m_lookAhead.m_token == Token::PLUSMINUS)
-        nextToken();
-    term();
-}
-
-void Parser::sumOp()
+ExpressionNode &Parser::signedTerm()
 {
     if(m_lookAhead.m_token == Token::PLUSMINUS)
     {
+        bool positive = m_lookAhead.m_sequence == "+";
         nextToken();
-        term();
-        sumOp();
+        ExpressionNode& expr = term();
+        if(positive)
+            return expr;
+        else
+            return *(new AdditionExpressionNode(expr, false));
     }
+    return term();
 }
 
-void Parser::term()
+ExpressionNode &Parser::sumOp(ExpressionNode& p_expr)
 {
-    factor();
-    termOp();
+    if(m_lookAhead.m_token == Token::PLUSMINUS)
+    {
+        AdditionExpressionNode* sum;
+        if(p_expr.getType() == ExpressionNode::ADDITION_NODE)
+            sum = dynamic_cast<AdditionExpressionNode*>(&p_expr);
+        else
+            sum = new AdditionExpressionNode(p_expr, true);
+
+        bool positive = m_lookAhead.m_sequence == "+";
+        nextToken();
+        ExpressionNode& expr = term();
+        sum->add(expr, positive);
+        return sumOp(*sum);
+    }
+
+    return p_expr;
 }
 
-void Parser::factor()
+ExpressionNode &Parser::term()
 {
-    argument();
-    factorOp();
+    ExpressionNode& expr = factor();
+    return termOp(expr);
 }
 
-void Parser::termOp()
+ExpressionNode &Parser::factor()
+{
+    ExpressionNode& a = argument();
+    return factorOp(a);
+}
+
+ExpressionNode &Parser::termOp(ExpressionNode &p_expr)
 {
     if(m_lookAhead.m_token == Token::MULTDIV)
     {
+        MultiplicationExpressionNode* prod;
+
+        if(p_expr.getType() == ExpressionNode::MULTIPLICATION_NODE)
+            prod = dynamic_cast<MultiplicationExpressionNode*>(&p_expr);
+        else
+            prod = new MultiplicationExpressionNode(p_expr, true);
+
+        bool positive = m_lookAhead.m_sequence == "*";
         nextToken();
-        signedFactor();
-        termOp();
+        ExpressionNode& expr = signedFactor();
+        prod->add(expr, positive);
+        return termOp(*prod);
     }
+
+    return p_expr;
 }
 
-void Parser::factorOp()
+ExpressionNode &Parser::factorOp(ExpressionNode &p_expr)
 {
     if(m_lookAhead.m_token == Token::RAISED)
     {
         nextToken();
-        signedFactor();
+        ExpressionNode& exponent = signedFactor();
+        return *(new ExponentiationExpressionNode(p_expr, exponent));
     }
+    return p_expr;
 }
 
-void Parser::signedFactor()
+ExpressionNode &Parser::signedFactor()
 {
     if(m_lookAhead.m_token == Token::PLUSMINUS)
+    {
+        bool positive = m_lookAhead.m_sequence == "+";
         nextToken();
-    factor();
+        ExpressionNode& expr = factor();
+        if(positive)
+            return expr;
+        else
+            return *(new AdditionExpressionNode(expr, false));
+    }
+
+    return factor();
 }
 
-void Parser::argument()
+ExpressionNode &Parser::argument()
 {
-    if(m_lookAhead.m_token == Token::OPEN_BRACKET)
+   if(m_lookAhead.m_token == Token::FUNCTION)
+   {
+       QString funcName = m_lookAhead.m_sequence;
+       nextToken();
+       ExpressionNode& expr = argument();
+       return *(new FunctionExpressionNode(funcName, expr));
+   }
+    else if(m_lookAhead.m_token == Token::OPEN_BRACKET)
     {
         nextToken();
-        expression();
+        ExpressionNode& expr = expression();
         if(m_lookAhead.m_token != Token::CLOSE_BRACKET)
             std::cerr << "Expected: ')' got: '" << m_lookAhead.m_sequence.toStdString() << "'" << std::endl;
         else
+        {
             nextToken();
+            return expr;
+        }
     }
-    else if(m_lookAhead.m_token == Token::FUNCTION)
-    {
-        nextToken();
-        argument();
-    }
-    else
-        value();
+
+    return value();
 }
 
-void Parser::value()
+ExpressionNode &Parser::value()
 {
-    if(m_lookAhead.m_token == Token::NUMBER || m_lookAhead.m_token ==  Token::VARIABLE)
+    if(m_lookAhead.m_token == Token::NUMBER)
+    {
+        ExpressionNode* expr = new ConstantExpressionNode(m_lookAhead.m_sequence);
         nextToken();
+        return *expr;
+    }
+
+    if(m_lookAhead.m_token ==  Token::VARIABLE)
+    {
+        ExpressionNode* expr = new VariableExpressionNode(m_lookAhead.m_sequence);
+        nextToken();
+        return *expr;
+    }
+
+    if(m_lookAhead.m_token == Token::EPSILON)
+        std::cerr << "Unexpected end of input" << std::endl;
     else
         std::cerr << "Unexpected symbol: " << m_lookAhead.m_sequence.toStdString() << std::endl;
 }
@@ -103,7 +162,7 @@ Parser::Parser()
 
 }
 
-void Parser::parse(QLinkedList<Token> p_tokens)
+ExpressionNode &Parser::parse(QLinkedList<Token> p_tokens)
 {
     m_tokens.clear();
     for(QLinkedList<Token>::iterator it = p_tokens.begin(); it != p_tokens.end(); it++)
@@ -112,10 +171,12 @@ void Parser::parse(QLinkedList<Token> p_tokens)
     m_lookAhead.assign(m_tokens.first());
 
 
-    expression();
+    ExpressionNode& expr = expression();
 
     if(m_lookAhead.m_token != Token::EPSILON)
         std::cerr << "Unexpected symbol " << m_lookAhead.m_sequence.toStdString() << " found" << std::endl;
+
+    return expr;
 }
 
 
