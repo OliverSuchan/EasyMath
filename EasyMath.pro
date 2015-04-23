@@ -13,32 +13,37 @@ TEMPLATE = app
 
 CONFIG += c++11
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    token.cpp \
-    tokenizer.cpp \
-    parser.cpp \
-    constantexpressionnode.cpp \
-    variableexpressionnode.cpp \
-    term.cpp \
-    sequenceexpressionnode.cpp \
-    additionexpressionnode.cpp \
-    multiplicationexpressionnode.cpp \
-    exponentiationexpressionnode.cpp \
-    functionexpressionnode.cpp
+SOURCES +=\
+    src/additionexpressionnode.cpp \
+    src/constantexpressionnode.cpp \
+    src/exponentiationexpressionnode.cpp \
+    src/functionexpressionnode.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/multiplicationexpressionnode.cpp \
+    src/parser.cpp \
+    src/sequenceexpressionnode.cpp \
+    src/term.cpp \
+    src/token.cpp \
+    src/tokenizer.cpp \
+    src/variableexpressionnode.cpp
 
-HEADERS  += mainwindow.hpp \
-    token.hpp \
-    tokenizer.hpp \
-    parser.hpp \
-    expressionnode.hpp \
-    constantexpressionnode.hpp \
-    variableexpressionnode.hpp \
-    term.hpp \
-    sequenceexpressionnode.hpp \
-    additionexpressionnode.hpp \
-    multiplicationexpressionnode.hpp \
-    exponentiationexpressionnode.hpp \
-    functionexpressionnode.hpp
+HEADERS  += \
+    include/additionexpressionnode.hpp \
+    include/constantexpressionnode.hpp \
+    include/exponentiationexpressionnode.hpp \
+    include/expressionnode.hpp \
+    include/functionexpressionnode.hpp \
+    include/mainwindow.hpp \
+    include/multiplicationexpressionnode.hpp \
+    include/parser.hpp \
+    include/sequenceexpressionnode.hpp \
+    include/term.hpp \
+    include/token.hpp \
+    include/tokenizer.hpp \
+    include/variableexpressionnode.hpp
 
-FORMS    += mainwindow.ui
+FORMS    += \
+    forms/mainwindow.ui
+
+INCLUDEPATH += include
