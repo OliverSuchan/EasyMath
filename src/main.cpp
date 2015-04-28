@@ -2,6 +2,7 @@
 #include <QApplication>
 #include "parser.hpp"
 #include "tokenizer.hpp"
+#include <iostream>
 
 int main(int argc, char *argv[])
 {
@@ -10,9 +11,11 @@ int main(int argc, char *argv[])
     w.show();
 
     FunctionExpressionNode::initMainFuncs();
+    VariableExpressionNode::initMainVars();
     Parser p = Parser();
     Tokenizer t = Tokenizer();
-    t.tokenize("cos(2)");
+    std::cout
+    t.tokenize("pi");
     std::cout << p.parse(t.getTokens()).getValue() << std::endl;
     return a.exec();
 }

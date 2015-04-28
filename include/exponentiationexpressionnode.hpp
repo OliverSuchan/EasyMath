@@ -1,6 +1,7 @@
 #ifndef EXPONENTIATIONEXPRESSIONNODE_HPP
 #define EXPONENTIATIONEXPRESSIONNODE_HPP
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include "expressionnode.hpp"
 
