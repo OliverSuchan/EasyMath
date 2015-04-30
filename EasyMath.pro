@@ -26,7 +26,8 @@ SOURCES +=\
     src/term.cpp \
     src/token.cpp \
     src/tokenizer.cpp \
-    src/variableexpressionnode.cpp
+    src/variableexpressionnode.cpp \
+    src/ann/feedforwardnetwork.cpp
 
 HEADERS  += \
     include/additionexpressionnode.hpp \
@@ -41,9 +42,12 @@ HEADERS  += \
     include/term.hpp \
     include/token.hpp \
     include/tokenizer.hpp \
-    include/variableexpressionnode.hpp
+    include/variableexpressionnode.hpp \
+    include/ann/matrix.hpp \
+    include/ann/feedforwardnetwork.hpp
 
 FORMS    += \
     forms/mainwindow.ui
 
-INCLUDEPATH += include
+INCLUDEPATH += include \
+    include/ann
