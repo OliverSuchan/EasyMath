@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    FeedForwardNetwork fnn = FeedForwardNetwork({2, 3, 2, 4});
+    FeedForwardNetwork fnn = FeedForwardNetwork({784, 16, 10});
 
 //    FunctionExpressionNode::initMainFuncs();
 //    VariableExpressionNode::initMainVars();
