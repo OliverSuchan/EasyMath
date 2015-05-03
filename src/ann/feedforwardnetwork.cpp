@@ -145,8 +145,14 @@ void FeedForwardNetwork::optimize()
         {
             for(std::size_t yIdx = 0; yIdx < m_weights.at(weightsIdx)->getColCount(); yIdx++)
             {
-
+                int i = sum + xIdx;
+                int j = sum + m_weights.at(weightsIdx)->getRowCount() + yIdx;
+                std::cout << "i: " << i << " j:" << j << std::endl;
+                double curWeight = m_weights.at(weightsIdx)->getVal(xIdx, yIdx);
+                double deltaWeight = LEARN_RATE * getErrorSignal(j) * getOutput(i);
+                m_weights.at(weightsIdx)->setVal(curWeight + deltaWeight, xIdx, yIdx);
             }
         }
+        sum += m_weights.at(weightsIdx)->getRowCount();
     }
 }
